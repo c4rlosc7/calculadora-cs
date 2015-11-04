@@ -3,14 +3,24 @@
 #include <string>
 #include <cassert>
 #include <zmqpp/zmqpp.hpp>
+
 using namespace std;
 using namespace zmqpp;
-int main(int argc, char **argv)
+
+int main(int argc, char **argv)   // ./client suma 1 1
 {
-	cout << "running client" << endl;			
+	cout << "running client "<<endl;
+
+	string operador1 = argv[2];         // operador 1
+	int op1 = std::stoi (operador1);
+
+	string operador2 = argv[3];        // operador 2
+	int op2 = std::stoi (operador2);
+
 	context ctx;
-	socket s(ctx, socket_type::xreq);
+	socket s(ctx, socket_type::req);
 	s.connect("tcp://localhost:5555");
+
 	string comparar;
 	int c=0;
 	comparar = argv[1];
@@ -33,75 +43,52 @@ int main(int argc, char **argv)
 		cout << "Fatal Error" << endl;
 	}
 
-	message m;		
-	while(true)
-	{
+	message m;
+	//while(true)
+	//{
 		switch(c)
 		{
-			case 1: 
-				int s1,s2;
-				cout << "Ingrese N1: ";
-				cin >> s1;
-				cout << "Ingrese N2: ";
-				cin >> s2;			
-				m << argv[1];
-				m << s1;
-				m << s2;	
+			case 1:
+				m << comparar;
+				m << op1;
+				m << op2;
 				s.send(m);
 				break;
-	
-			case 2:		
-				int r1,r2;
-				cout << "Ingrese N1: ";
-				cin >> r1;
-				cout << "Ingrese N2: ";
-				cin >> r2;			
-				m << argv[1];
-				m << r1;
-				m << r2;				
-				s.send(m);	
-				break;		
+
+			case 2:
+				m << comparar;
+				m << op1;
+				m << op2;
+				s.send(m);
+				break;
 
 			case 3:
-				int m1,m2;
-				cout << "Ingrese N1: ";
-				cin >> m1;
-				cout << "Ingrese N2: ";
-				cin >> m2;			
-				m << argv[1];
-				m << m1;
-				m << m2;
-				s.send(m);				
-				break;		
-	 
-			case 4: 
-				int d1,d2;
-				cout << "Ingrese N1: ";
-				cin >> d1;
-				cout << "Ingrese N2: ";
-				cin >> d2;			
-				m << argv[1];
-				m << d1;
-				m << d2;
-				s.send(m);				
+				m << comparar;
+				m << op1;
+				m << op2;
+				s.send(m);
+				break;
+
+			case 4:
+				m << comparar;
+				m << op1;
+				m << op2;
+				s.send(m);
 				break;
 
 			case 5:
-				int f;
-				cout << "Ingrese # a calcular el factorial: ";
-				cin >> f;
-				m << argv[1];
-				m << f;
-				s.send(m);				
+				m << comparar;
+				m << op1;
+				s.send(m);
 				break;
 			default:
 				cout << "saliendo... \n" << endl;
 		}
 		message r;
-		s.receive(r);	 
+		s.receive(r);
 		int result;
 		r >> result;
-		cout << "El resultado es :" << result << endl;		
-	}
+		cout << "El resultado es :" << result << endl;
+	//}
 	return 0;
 }
